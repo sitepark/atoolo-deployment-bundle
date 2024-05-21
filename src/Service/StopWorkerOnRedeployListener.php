@@ -39,7 +39,6 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
     public function __construct(
         string $projectDir,
         string $cacheDir,
-        private readonly MessageBusInterface $bus,
         private readonly LoggerInterface $logger,
     ) {
         $dir = realpath($cacheDir);
@@ -64,7 +63,6 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
             'and hash ' . $this->workerStartHash
         );
         file_put_contents($this->workerStartHashFile, $this->workerStartHash);
-        $this->bus->dispatch(new DeployedMessage($this->projectDir));
     }
 
     public function onWorkerRunning(WorkerRunningEvent $event): void
@@ -79,7 +77,6 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
         $this->logger->info(
             'The project directory has changed. This project was undeployed.'
         );
-        $this->bus->dispatch(new UndeployedMessage($this->projectDir));
         $this->logger->info(
             'The worker is stopped.'
         );
