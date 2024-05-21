@@ -9,12 +9,12 @@ services:
 
   Atoolo\Deployment\Service\StopWorkerOnRedeployListener:
     arguments:
-      - '%kernel.project_dir%'
       - '%kernel.cache_dir%'
 
   Atoolo\Deployment\Service\Deployer:
     arguments:
       - !tagged_iterator { tag: 'atoolo_deployment.deployExecutor' }
+      - '@logger'
 
   Atoolo\Deployment\Console\Command\DeployCommand:
     arguments:

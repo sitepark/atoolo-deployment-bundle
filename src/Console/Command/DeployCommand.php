@@ -18,12 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
         'the application to be production ready',
     aliases: ['feds:warm-up']
 )]
-final class DeployCommand extends Command implements LoggerAwareInterface
+final class DeployCommand extends Command
 {
-    use LoggerAwareTrait;
-
-    /**
-     */
     public function __construct(
         private readonly Deployer $deployer
     ) {

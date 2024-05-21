@@ -32,12 +32,10 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class StopWorkerOnRedeployListener implements EventSubscriberInterface
 {
-    private string $projectDir;
     private string $workerStartHashFile;
     private ?string $workerStartHash = null;
 
     public function __construct(
-        string $projectDir,
         string $cacheDir,
         private readonly LoggerInterface $logger,
     ) {
@@ -51,7 +49,6 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
             '/worker_start_hash_' .
             getmypid();
         $this->workerStartHashFile = $workerStartHashFile;
-        $this->projectDir = realpath($projectDir);
     }
 
     public function onWorkerStarted(): void

@@ -6,5 +6,5 @@ namespace Atoolo\Deployment\Service;
 
 interface DeploymentExecutable
 {
-    public function execute(): bool;
+    public function execute(): void;
 }

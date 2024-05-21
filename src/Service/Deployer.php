@@ -5,23 +5,17 @@ declare(strict_types=1);
 namespace Atoolo\Deployment\Service;
 
 use Psr\Log\LoggerAwareTrait;
-use SP\Sitepark\RoutingBundle\Service\Task\Executable;
+use Psr\Log\LoggerInterface;
 
 class Deployer
 {
-    use LoggerAwareTrait;
-
     /**
-     * @var iterable|DeploymentExecutable[]
+     * @param iterable|DeploymentExecutable[] $deploymentTasks
      */
-    private $deploymentTasks;
-
-    /**
-     * @param iterable|DeploymentExecutable[] $depoymentTasks
-     */
-    public function __construct(iterable $deploymentTasks)
-    {
-        $this->deploymentTasks = $deploymentTasks;
+    public function __construct(
+        private readonly iterable $deploymentTasks,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     public function execute(): bool
