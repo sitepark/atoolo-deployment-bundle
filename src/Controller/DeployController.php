@@ -26,4 +26,14 @@ final class DeployController extends AbstractController
         $successful = $this->deployer->execute();
         return new JsonResponse(['success' => $successful]);
     }
+
+    /**
+     * @deprecated will be removed when all projects have been converted
+     */
+    #[Route('/api/admin/warm-up', name: 'atoolo_deployment_warmup')]
+    public function warmup(Request $request): Response
+    {
+        $successful = $this->deployer->execute();
+        return new JsonResponse(['success' => $successful]);
+    }
 }

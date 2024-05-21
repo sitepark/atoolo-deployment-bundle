@@ -12,7 +12,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'deployment:deploy')]
+#[AsCommand(
+    name: 'deployment:deploy',
+    description: 'Executes all Deployer-Task to deploy ' .
+        'the application to be production ready',
+    aliases: ['feds:warm-up']
+)]
 final class DeployCommand extends Command implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -23,14 +28,6 @@ final class DeployCommand extends Command implements LoggerAwareInterface
         private readonly Deployer $deployer
     ) {
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription(
-            'Executes all Deployer-Task to deploy ' .
-            'the application to be production ready'
-        );
     }
 
     protected function execute(
