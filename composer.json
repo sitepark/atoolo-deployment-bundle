@@ -26,7 +26,6 @@
         "roave/security-advisories": "dev-latest",
         "squizlabs/php_codesniffer": "^3.7"
     },
-    "repositories": {},
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
