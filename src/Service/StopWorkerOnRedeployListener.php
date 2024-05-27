@@ -86,7 +86,10 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
             return true;
         }
 
-        $workerStartHash = file_get_contents($this->workerStartHashFile);
+        $workerStartHash = @file_get_contents($this->workerStartHashFile);
+        if ($workerStartHash === false) {
+            return true;
+        }
         return $workerStartHash !== $this->workerStartHash;
     }
 
