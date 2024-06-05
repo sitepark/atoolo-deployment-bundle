@@ -53,7 +53,6 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
 
     public function onWorkerStarted(): void
     {
-        echo "start worker\n";
         $this->workerLogger->info(
             'start redeploy listener with '
             . $this->scriptFilename
