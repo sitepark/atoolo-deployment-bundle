@@ -16,43 +16,45 @@ use Symfony\Component\Messenger\Worker;
 #[CoversClass(StopWorkerOnRedeployListener::class)]
 class StopWorkerOnRedeployListenerTest extends TestCase
 {
-    private string $cacheDir = 'var/test/StopWorkerOnRedeployListener';
+    private string $workDir = 'var/test/StopWorkerOnRedeployListener';
+
+    private string $resourceDir = __DIR__ . '/..'
+        . '/resources/Service/StopWorkerOnRedeployListenerTest';
+
+    private string $projectDir1;
+
+    private string $projectDir2;
+
+    private string $symlink;
+
+    private string $originScriptFilename;
+
     private StopWorkerOnRedeployListener $listener;
     private LoggerInterface $logger;
 
     public function setUp(): void
     {
-        if (!is_dir($this->cacheDir)) {
-            mkdir($this->cacheDir, 0777, true);
-        }
-        foreach (glob($this->cacheDir . '/worker_start_hash_*') as $file) {
-            unlink($file);
-        }
+        $this->projectDir1 = $this->resourceDir . '/project-1';
+        $this->projectDir2 = $this->resourceDir . '/project-2';
+        $this->symlink = $this->workDir . '/project_link';
+        $scriptFileName = $this->symlink . '/bin/console';
+
+        @unlink($this->workDir . '/project_link');
+        symlink($this->projectDir1, $this->symlink);
+
+        $this->originScriptFilename = $_SERVER['SCRIPT_FILENAME'];
+        $_SERVER['SCRIPT_FILENAME'] = $scriptFileName;
+
         $this->logger = $this->createStub(LoggerInterface::class);
         $this->listener = new StopWorkerOnRedeployListener(
-            $this->cacheDir,
             $this->logger
         );
     }
 
-    public function testOnWorkerStarted(): void
+    public function tearDown(): void
     {
-        $this->listener->onWorkerStarted();
-        $count = count(glob($this->cacheDir . '/worker_start_hash_*'));
-        $this->assertEquals(
-            1,
-            $count,
-            'one worker start hash file should be created'
-        );
-    }
-
-    public function testUnableToGetCacheDirRealPath(): void
-    {
-        $this->expectException(RuntimeException::class);
-        new StopWorkerOnRedeployListener(
-            '/abc',
-            $this->logger
-        );
+        @unlink($this->symlink);
+        $_SERVER['SCRIPT_FILENAME'] = $this->originScriptFilename;
     }
 
     public function testOnWorkerRunningIsNotIdle(): void
@@ -77,31 +79,6 @@ class StopWorkerOnRedeployListenerTest extends TestCase
         $this->listener->onWorkerRunning($event);
     }
 
-    public function testOnWorkerRunningIsIdleShouldStop(): void
-    {
-        $worker = $this->createMock(Worker::class);
-        $event = new WorkerRunningEvent($worker, true);
-
-        $this->listener->onWorkerStarted();
-
-        $file = $this->cacheDir . '/worker_start_hash_' . getmypid();
-        file_put_contents($file, 'other-hash');
-
-        $worker->expects($this->once())
-            ->method('stop');
-        $this->listener->onWorkerRunning($event);
-    }
-
-    public function testOnWorkerRunningIsIdleShouldStopHashFileMissing(): void
-    {
-        $worker = $this->createMock(Worker::class);
-        $event = new WorkerRunningEvent($worker, true);
-
-        $worker->expects($this->once())
-            ->method('stop');
-        $this->listener->onWorkerRunning($event);
-    }
-
     public function testGetSubscribedEvents(): void
     {
         $this->assertEquals(
@@ -112,5 +89,47 @@ class StopWorkerOnRedeployListenerTest extends TestCase
             StopWorkerOnRedeployListener::getSubscribedEvents(),
             'should return the correct events'
         );
+    }
+
+    public function testSymlinkChanged(): void
+    {
+        $worker = $this->createMock(Worker::class);
+        $worker->expects($this->once())
+            ->method('stop');
+        $event = new WorkerRunningEvent($worker, true);
+
+        $this->listener->onWorkerRunning($event);
+        unlink($this->symlink);
+        symlink($this->projectDir2, $this->symlink);
+        $this->listener->onWorkerRunning($event);
+    }
+
+    public function testMissingScriptFilenameServerVar(): void
+    {
+        unset($_SERVER['SCRIPT_FILENAME']);
+        $this->expectException(RuntimeException::class);
+        new StopWorkerOnRedeployListener(
+            $this->createStub(LoggerInterface::class)
+        );
+    }
+
+    public function testMissingInvalidScriptFilenameServerVar(): void
+    {
+        $_SERVER['SCRIPT_FILENAME'] = 'invalid';
+        $this->expectException(RuntimeException::class);
+        new StopWorkerOnRedeployListener(
+            $this->createStub(LoggerInterface::class)
+        );
+    }
+
+    public function testSymlinkChangedWithInvalidNewLink(): void
+    {
+        $worker = $this->createMock(Worker::class);
+        $worker->expects($this->once())
+            ->method('stop');
+        $event = new WorkerRunningEvent($worker, true);
+
+        unlink($this->symlink);
+        $this->listener->onWorkerRunning($event);
     }
 }

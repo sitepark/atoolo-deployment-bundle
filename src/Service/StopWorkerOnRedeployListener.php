@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Atoolo\Deployment\Service;
 
-use Atoolo\Deployment\Message\DeployedMessage;
-use Atoolo\Deployment\Message\UndeployedMessage;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -32,34 +30,35 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class StopWorkerOnRedeployListener implements EventSubscriberInterface
 {
-    private string $workerStartHashFile;
-    private ?string $workerStartHash = null;
+    private string $scriptFilename;
+    private string $scriptFilenameRealPath;
 
     public function __construct(
-        string $cacheDir,
         private readonly LoggerInterface $logger,
     ) {
-        $dir = realpath($cacheDir);
-        if ($dir === false) {
+        if (!isset($_SERVER['SCRIPT_FILENAME'])) {
             throw new RuntimeException(
-                'Could not create worker start hash file in ' . $cacheDir
+                '$_SERVER[\'SCRIPT_FILENAME\'] is not set'
             );
         }
-        $workerStartHashFile = realpath($dir) .
-            '/worker_start_hash_' .
-            getmypid();
-        $this->workerStartHashFile = $workerStartHashFile;
+        $this->scriptFilename = $_SERVER['SCRIPT_FILENAME'];
+        $scriptFilenameRealPath = realpath($this->scriptFilename);
+        if ($scriptFilenameRealPath === false) {
+            throw new RuntimeException(
+                'unable to determine realpath of ' . $this->scriptFilename
+            );
+        }
+        $this->scriptFilenameRealPath = $scriptFilenameRealPath;
     }
 
     public function onWorkerStarted(): void
     {
-        $this->workerStartHash = bin2hex(random_bytes(18));
         $this->logger->info(
-            "start redeploy listener with " .
-            $this->workerStartHashFile . ' ' .
-            'and hash ' . $this->workerStartHash
+            'start redeploy listener with '
+            . $this->scriptFilename
+            . ' -> '
+            . $this->scriptFilenameRealPath
         );
-        file_put_contents($this->workerStartHashFile, $this->workerStartHash);
     }
 
     public function onWorkerRunning(WorkerRunningEvent $event): void
@@ -82,15 +81,12 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
 
     private function shouldStop(): bool
     {
-        if (!is_file($this->workerStartHashFile)) {
+        $scriptFilenameRealPath = realpath($this->scriptFilename);
+        if ($scriptFilenameRealPath === false) {
             return true;
         }
 
-        $workerStartHash = @file_get_contents($this->workerStartHashFile);
-        if ($workerStartHash === false) {
-            return true;
-        }
-        return $workerStartHash !== $this->workerStartHash;
+        return $scriptFilenameRealPath !== $this->scriptFilenameRealPath;
     }
 
     public static function getSubscribedEvents(): array
