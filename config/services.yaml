@@ -13,7 +13,6 @@ services:
 
   Atoolo\Deployment\Service\Deployer:
     arguments:
-      - !tagged_iterator { tag: 'atoolo_deployment.deploy_executor' }
       - '@logger'
 
   Atoolo\Deployment\Console\Command\DeployCommand:
