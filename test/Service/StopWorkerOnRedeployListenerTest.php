@@ -16,7 +16,8 @@ use Symfony\Component\Messenger\Worker;
 #[CoversClass(StopWorkerOnRedeployListener::class)]
 class StopWorkerOnRedeployListenerTest extends TestCase
 {
-    private string $workDir = 'var/test/StopWorkerOnRedeployListener';
+    private string $workDir = __DIR__
+        . '/../../var/test/StopWorkerOnRedeployListener';
 
     private string $resourceDir = __DIR__ . '/..'
         . '/resources/Service/StopWorkerOnRedeployListenerTest';
@@ -34,6 +35,13 @@ class StopWorkerOnRedeployListenerTest extends TestCase
 
     public function setUp(): void
     {
+
+        if (!is_dir($this->workDir) && mkdir($this->workDir) === false) {
+            throw new RuntimeException(
+                'unable to create work directory ' . $this->workDir
+            );
+        }
+
         $this->projectDir1 = $this->resourceDir . '/project-1';
         $this->projectDir2 = $this->resourceDir . '/project-2';
         $this->symlink = $this->workDir . '/project_link';
