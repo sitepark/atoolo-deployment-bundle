@@ -34,7 +34,7 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
     private string $scriptFilenameRealPath;
 
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface $workerLogger,
     ) {
         if (!isset($_SERVER['SCRIPT_FILENAME'])) {
             throw new RuntimeException(
@@ -53,7 +53,8 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
 
     public function onWorkerStarted(): void
     {
-        $this->logger->info(
+        echo "start worker\n";
+        $this->workerLogger->info(
             'start redeploy listener with '
             . $this->scriptFilename
             . ' -> '
@@ -70,10 +71,10 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
             return;
         }
 
-        $this->logger->info(
+        $this->workerLogger->info(
             'The project directory has changed. This project was undeployed.'
         );
-        $this->logger->info(
+        $this->workerLogger->info(
             'The worker is stopped.'
         );
         $event->getWorker()->stop();
@@ -81,6 +82,7 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
 
     private function shouldStop(): bool
     {
+        clearstatcache(true);
         $scriptFilenameRealPath = realpath($this->scriptFilename);
         if ($scriptFilenameRealPath === false) {
             return true;
