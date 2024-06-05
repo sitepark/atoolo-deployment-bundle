@@ -36,7 +36,10 @@ class StopWorkerOnRedeployListenerTest extends TestCase
     public function setUp(): void
     {
 
-        if (!is_dir($this->workDir) && mkdir($this->workDir) === false) {
+        if (
+            !is_dir($this->workDir)
+            && mkdir($this->workDir, 0777, true) === false
+        ) {
             throw new RuntimeException(
                 'unable to create work directory ' . $this->workDir
             );
