@@ -6,5 +6,7 @@
 
 # Atoolo deployment bundle
 
+Symfony bundle to react to the deploy and undeploy of a project.
+
 [Documentation](https://sitepark.github.io/atoolo-docs/develop/bundles/deployment/)
 
