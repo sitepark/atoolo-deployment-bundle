@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Atoolo\Deployment\Service;
 
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
 class Deployer

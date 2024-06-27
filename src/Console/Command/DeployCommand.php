@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Atoolo\Deployment\Console\Command;
 
 use Atoolo\Deployment\Service\Deployer;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

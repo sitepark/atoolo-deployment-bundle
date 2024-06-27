@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Atoolo\Deployment\Test\Controller;
 
-use Atoolo\Deployment\Console\Command\DeployCommand;
 use Atoolo\Deployment\Controller\DeployController;
 use Atoolo\Deployment\Service\Deployer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpFoundation\Request;
 
 #[CoversClass(DeployController::class)]
