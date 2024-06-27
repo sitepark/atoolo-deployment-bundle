@@ -9,7 +9,6 @@ use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 use Symfony\Component\Messenger\Event\WorkerStartedEvent;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * If the application is redeployed, this is done by setting a symlink to
