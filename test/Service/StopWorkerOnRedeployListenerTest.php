@@ -41,7 +41,7 @@ class StopWorkerOnRedeployListenerTest extends TestCase
             && mkdir($this->workDir, 0777, true) === false
         ) {
             throw new RuntimeException(
-                'unable to create work directory ' . $this->workDir
+                'unable to create work directory ' . $this->workDir,
             );
         }
 
@@ -58,7 +58,7 @@ class StopWorkerOnRedeployListenerTest extends TestCase
 
         $this->logger = $this->createStub(LoggerInterface::class);
         $this->listener = new StopWorkerOnRedeployListener(
-            $this->logger
+            $this->logger,
         );
     }
 
@@ -98,7 +98,7 @@ class StopWorkerOnRedeployListenerTest extends TestCase
                 WorkerRunningEvent::class => 'onWorkerRunning',
             ],
             StopWorkerOnRedeployListener::getSubscribedEvents(),
-            'should return the correct events'
+            'should return the correct events',
         );
     }
 
@@ -120,7 +120,7 @@ class StopWorkerOnRedeployListenerTest extends TestCase
         unset($_SERVER['SCRIPT_FILENAME']);
         $this->expectException(RuntimeException::class);
         new StopWorkerOnRedeployListener(
-            $this->createStub(LoggerInterface::class)
+            $this->createStub(LoggerInterface::class),
         );
     }
 
@@ -129,7 +129,7 @@ class StopWorkerOnRedeployListenerTest extends TestCase
         $_SERVER['SCRIPT_FILENAME'] = 'invalid';
         $this->expectException(RuntimeException::class);
         new StopWorkerOnRedeployListener(
-            $this->createStub(LoggerInterface::class)
+            $this->createStub(LoggerInterface::class),
         );
     }
 

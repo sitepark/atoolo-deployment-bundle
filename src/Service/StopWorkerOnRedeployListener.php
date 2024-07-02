@@ -37,14 +37,14 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
     ) {
         if (!isset($_SERVER['SCRIPT_FILENAME'])) {
             throw new RuntimeException(
-                '$_SERVER[\'SCRIPT_FILENAME\'] is not set'
+                '$_SERVER[\'SCRIPT_FILENAME\'] is not set',
             );
         }
         $this->scriptFilename = $_SERVER['SCRIPT_FILENAME'];
         $scriptFilenameRealPath = realpath($this->scriptFilename);
         if ($scriptFilenameRealPath === false) {
             throw new RuntimeException(
-                'unable to determine realpath of ' . $this->scriptFilename
+                'unable to determine realpath of ' . $this->scriptFilename,
             );
         }
         $this->scriptFilenameRealPath = $scriptFilenameRealPath;
@@ -56,7 +56,7 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
             'start redeploy listener with '
             . $this->scriptFilename
             . ' -> '
-            . $this->scriptFilenameRealPath
+            . $this->scriptFilenameRealPath,
         );
     }
 
@@ -70,10 +70,10 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
         }
 
         $this->workerLogger->info(
-            'The project directory has changed. This project was undeployed.'
+            'The project directory has changed. This project was undeployed.',
         );
         $this->workerLogger->info(
-            'The worker is stopped.'
+            'The worker is stopped.',
         );
         $event->getWorker()->stop();
     }

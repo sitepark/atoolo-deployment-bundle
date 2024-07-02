@@ -13,9 +13,8 @@ class Deployer
      */
     public function __construct(
         private readonly iterable $deploymentTasks,
-        private readonly LoggerInterface $logger
-    ) {
-    }
+        private readonly LoggerInterface $logger,
+    ) {}
 
     public function execute(): bool
     {
@@ -29,7 +28,7 @@ class Deployer
                 $this->logger->warning(
                     'An exception occurred during deployment task: ' .
                         $throwable->getMessage(),
-                    ['exception' => $throwable, 'task' => get_class($task)]
+                    ['exception' => $throwable, 'task' => get_class($task)],
                 );
             }
         }

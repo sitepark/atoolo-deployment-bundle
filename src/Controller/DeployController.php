@@ -16,9 +16,8 @@ final class DeployController extends AbstractController
     /**
      */
     public function __construct(
-        private readonly Deployer $deployer
-    ) {
-    }
+        private readonly Deployer $deployer,
+    ) {}
 
     #[Route('/api/admin/deploy', name: 'atoolo_deployment_deploy')]
     public function deploy(Request $request): Response

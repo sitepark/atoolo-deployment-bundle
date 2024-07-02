@@ -14,19 +14,19 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: 'deployment:deploy',
     description: 'Executes all Deployer-Task to deploy ' .
         'the application to be production ready',
-    aliases: ['feds:warm-up']
+    aliases: ['feds:warm-up'],
 )]
 final class DeployCommand extends Command
 {
     public function __construct(
-        private readonly Deployer $deployer
+        private readonly Deployer $deployer,
     ) {
         parent::__construct();
     }
 
     protected function execute(
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
     ): int {
         $successful = $this->deployer->execute();
         return $successful ? Command::SUCCESS : Command::FAILURE;
