@@ -26,8 +26,8 @@ class Deployer
             } catch (\Throwable $throwable) {
                 $successful = false;
                 $this->logger->warning(
-                    'An exception occurred during deployment task: ' .
-                        $throwable->getMessage(),
+                    'An exception occurred during deployment task: '
+                        . $throwable->getMessage(),
                     ['exception' => $throwable, 'task' => get_class($task)],
                 );
             }

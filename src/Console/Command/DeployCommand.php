@@ -12,8 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'deployment:deploy',
-    description: 'Executes all Deployer-Task to deploy ' .
-        'the application to be production ready',
+    description: 'Executes all Deployer-Task to deploy '
+        . 'the application to be production ready',
     aliases: ['feds:warm-up'],
 )]
 final class DeployCommand extends Command
