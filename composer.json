@@ -73,13 +73,13 @@
             "@analyse:compatibilitycheck"
         ],
         "analyse:compatibilitycheck": "./vendor/bin/phpcs --standard=./phpcs.compatibilitycheck.xml",
-	"analyse:phpcsfixer": "./tools/php-cs-fixer check --diff --show-progress=dots",
+        "analyse:phpcsfixer": "./tools/php-cs-fixer check --diff --show-progress=dots",
         "analyse:phplint": "./vendor/bin/phplint",
         "analyse:phpstan": "./tools/phpstan analyse",
-        "cs-fix": [
-            "@cs-fix:phpcbf"
+        "fix": [
+            "@fix:phpcsfixer"
         ],
-        "cs-fix:phpcbf": "./vendor/bin/phpcbf",
+        "fix:phpcsfixer": "./tools/php-cs-fixer fix",
         "report": [
             "@report:phpstan"
         ],
