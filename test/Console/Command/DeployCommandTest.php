@@ -6,7 +6,6 @@ namespace Atoolo\Deployment\Test\Console\Command;
 
 use Atoolo\Deployment\Console\Command\DeployCommand;
 use Atoolo\Deployment\Service\Deployer;
-use Atoolo\Search\Console\Application;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
