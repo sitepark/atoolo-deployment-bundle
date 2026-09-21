@@ -35,12 +35,13 @@ class StopWorkerOnRedeployListener implements EventSubscriberInterface
     public function __construct(
         private readonly LoggerInterface $workerLogger,
     ) {
-        if (!isset($_SERVER['SCRIPT_FILENAME'])) {
+        $scriptFilename = $_SERVER['SCRIPT_FILENAME'] ?? null;
+        if (!is_string($scriptFilename)) {
             throw new RuntimeException(
                 '$_SERVER[\'SCRIPT_FILENAME\'] is not set',
             );
         }
-        $this->scriptFilename = $_SERVER['SCRIPT_FILENAME'];
+        $this->scriptFilename = $scriptFilename;
         $scriptFilenameRealPath = realpath($this->scriptFilename);
         if ($scriptFilenameRealPath === false) {
             throw new RuntimeException(
